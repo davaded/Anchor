@@ -2,6 +2,8 @@
 
 Use the Anchor CLI through `scripts/anchor-control.mjs`. The PowerShell script is a Windows fallback.
 
+If the skill was installed from an Anchor source checkout, the installer writes `anchor-runtime.json` so the wrappers can find that workspace automatically. Otherwise set `ANCHOR_REPO_ROOT` or make an `anchor` CLI available on `PATH`.
+
 ## When To Use
 
 - Long-running coding tasks that should not depend on one-shot Claude output

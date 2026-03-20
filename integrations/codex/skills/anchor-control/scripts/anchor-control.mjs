@@ -7,6 +7,8 @@ import { fileURLToPath } from "node:url";
 const DEFAULT_BACKEND = "codex";
 const VALID_COMMANDS = new Set(["doctor", "goal"]);
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
+const WORKSPACE_PACKAGE_NAME = "anchor-runtime-workspace";
+const RUNTIME_CONFIG_PATH = path.resolve(scriptDir, "..", "anchor-runtime.json");
 
 function fail(message) {
   console.error(message);
@@ -20,7 +22,7 @@ function findRepoRoot(startDir) {
     if (fs.existsSync(candidate)) {
       try {
         const pkg = JSON.parse(fs.readFileSync(candidate, "utf8"));
-        if (pkg?.name === "anchor-runtime-workspace") {
+        if (pkg?.name === WORKSPACE_PACKAGE_NAME) {
           return current;
         }
       } catch {
@@ -49,6 +51,32 @@ function hasCommand(command) {
     shell: true
   });
   return result.status === 0;
+}
+
+function resolveRepoRootOverride(sourceName, startDir) {
+  const repoRoot = findRepoRoot(path.resolve(startDir));
+  if (!repoRoot) {
+    fail(`${sourceName} does not point to an Anchor workspace: ${startDir}`);
+  }
+  return repoRoot;
+}
+
+function readConfiguredRepoRoot() {
+  if (!fs.existsSync(RUNTIME_CONFIG_PATH)) {
+    return undefined;
+  }
+
+  try {
+    const config = JSON.parse(fs.readFileSync(RUNTIME_CONFIG_PATH, "utf8"));
+    if (typeof config?.repoRoot !== "string" || config.repoRoot.trim().length === 0) {
+      fail(`Invalid Anchor runtime config at ${RUNTIME_CONFIG_PATH}: missing repoRoot.`);
+    }
+    return resolveRepoRootOverride("Anchor runtime config", config.repoRoot);
+  } catch (error) {
+    fail(
+      `Invalid Anchor runtime config at ${RUNTIME_CONFIG_PATH}: ${error instanceof Error ? error.message : String(error)}`
+    );
+  }
 }
 
 function parseArgs(argv) {
@@ -172,10 +200,15 @@ if (hasCommand("anchor")) {
 }
 
 const envRepoRoot = process.env.ANCHOR_REPO_ROOT;
-const repoRoot = envRepoRoot ? path.resolve(envRepoRoot) : findRepoRoot(path.resolve(scriptDir, "..", "..", "..", "..", ".."));
+const repoRoot =
+  envRepoRoot && envRepoRoot.trim().length > 0
+    ? resolveRepoRootOverride("ANCHOR_REPO_ROOT", envRepoRoot)
+    : readConfiguredRepoRoot() ?? findRepoRoot(path.resolve(scriptDir, "..", "..", "..", "..", ".."));
 
 if (repoRoot && hasCommand("pnpm")) {
   run("pnpm", ["anchor", ...anchorArgs], repoRoot);
 }
 
-fail("Unable to locate an Anchor runtime. Install the anchor CLI on PATH or set ANCHOR_REPO_ROOT to an Anchor workspace.");
+fail(
+  "Unable to locate an Anchor runtime. Install the anchor CLI on PATH, reinstall the skill from an Anchor workspace, or set ANCHOR_REPO_ROOT to an Anchor workspace."
+);

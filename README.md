@@ -32,7 +32,7 @@ Example:
 pnpm anchor goal --backend codex --goal "Implement the auth migration and verify it" --cwd D:\repo --json
 ```
 
-If you are calling the installed skill assets directly, use the cross-platform wrapper:
+If you are calling the installed skill assets directly, use the cross-platform wrapper. Installs performed from an Anchor source checkout, or with `--repo-root`, record the runtime workspace automatically. Otherwise set `ANCHOR_REPO_ROOT` or make `anchor` available on `PATH`.
 
 ```bash
 node ./scripts/anchor-control.mjs doctor --json

@@ -32,7 +32,7 @@ anchor goal
 pnpm anchor goal --backend codex --goal "Implement the auth migration and verify it" --cwd D:\repo --json
 ```
 
-如果你是直接调用安装后的 skill 资源，推荐使用跨平台 wrapper：
+如果你是直接调用安装后的 skill 资源，推荐使用跨平台 wrapper。若安装动作来自 Anchor 源码仓库，或显式传入了 `--repo-root`，安装器会自动记录运行时工作区；否则请设置 `ANCHOR_REPO_ROOT`，或者保证 `anchor` 已经在 `PATH` 中可用：
 
 ```bash
 node ./scripts/anchor-control.mjs doctor --json
