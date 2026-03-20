@@ -1,6 +1,6 @@
 {
   "name": "anchor-workflow",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Install Anchor goal workflow skills for Codex and Claude Code",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

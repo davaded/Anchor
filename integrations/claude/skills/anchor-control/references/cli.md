@@ -1,6 +1,6 @@
 # Anchor Control CLI
 
-Use the repository-local `anchor` CLI through `scripts/anchor-control.ps1`.
+Use the Anchor CLI through `scripts/anchor-control.mjs`. The PowerShell script is a Windows fallback.
 
 ## When To Use
 
@@ -13,12 +13,12 @@ Use the repository-local `anchor` CLI through `scripts/anchor-control.ps1`.
 
 ### Doctor
 
-```powershell
-.\scripts\anchor-control.ps1 doctor -Json
+```bash
+node ./scripts/anchor-control.mjs doctor --json
 ```
 
 ### Goal
 
-```powershell
-.\scripts\anchor-control.ps1 goal -Backend claude -Goal "Implement or analyze X" -Cwd "D:\path\repo" -Json
+```bash
+node ./scripts/anchor-control.mjs goal --backend claude --goal "Implement or analyze X" --cwd "/path/to/repo" --json
 ```

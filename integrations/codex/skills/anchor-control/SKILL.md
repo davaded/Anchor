@@ -10,18 +10,20 @@ description: Use this skill when a coding task should be run through the local A
 This skill routes work through the local Anchor runtime and its CLI wrappers.
 Use it when task control matters more than one-shot execution.
 
+Prefer the Node wrapper for cross-platform execution. Use the PowerShell script only as a Windows fallback.
+
 ## Workflow
 
 1. Run `doctor` first:
 
-```powershell
-.\scripts\anchor-control.ps1 doctor -Json
+```bash
+node ./scripts/anchor-control.mjs doctor --json
 ```
 
 2. Start a new Anchor-controlled workflow:
 
-```powershell
-.\scripts\anchor-control.ps1 goal -Backend codex -Goal "Implement the requested change" -Cwd "D:\repo" -Json
+```bash
+node ./scripts/anchor-control.mjs goal --backend codex --goal "Implement the requested change" --cwd "/path/to/repo" --json
 ```
 
 3. Capture the returned `task_id` if you need to inspect the underlying runtime later through low-level tooling.
@@ -43,4 +45,4 @@ Do not use this skill for:
 ## References
 
 - For exact CLI forms, read `references/cli.md`.
-- Use `scripts/anchor-control.ps1` instead of reconstructing low-level runtime commands manually.
+- Use `scripts/anchor-control.mjs` instead of reconstructing low-level runtime commands manually.

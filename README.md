@@ -1,5 +1,7 @@
 # Anchor
 
+[English](./README.md) | [简体中文](./README.zh-CN.md)
+
 Anchor is a goal-first control runtime for coding agents.
 
 It sits above execution backends like Codex and Claude Code, keeps the control loop deterministic, records rounds in SQLite, stores artifacts locally, and exposes one user-facing action:
