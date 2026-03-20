@@ -2,31 +2,31 @@
 
 [English](./README.md) | [简体中文](./README.zh-CN.md)
 
-Anchor 是一个面向编码 agent 的、以目标为中心的控制层。
+一个目标。受控执行。可回放状态。
 
-如果你要的不是“让 agent 自己跑”，而是一个能保留状态、记住失败、以明确原因停止、并且留下可回放执行账本的 runtime，那么 Anchor 就是为这个场景准备的。
+Anchor 是一个面向编码 agent 的控制层。它位于 Codex 和 Claude Code 之上，负责运行确定性的 round loop、记录实际发生过的事情，并且以明确原因停止，而不是给你一个模糊的 agent 退出结果。
 
-## 安装
+## 一步开始
 
 ```bash
 npx anchor-workflow install
 ```
 
-它会安装：
+它会把 Anchor 安装到：
 
-- Codex skill：`~/.codex/skills/anchor-control`
-- Claude Code skill：`~/.claude/skills/anchor-control`
+- Codex：`~/.codex/skills/anchor-control`
+- Claude Code：`~/.claude/skills/anchor-control`
 - Claude command：`~/.claude/commands/anchor/goal.md`
 
-## 使用
+## 核心动作
 
-Anchor 对外的核心动作只有一个：
+Anchor 对外只围绕一个命令构建：
 
 ```bash
 anchor goal
 ```
 
-本地 CLI 的典型用法：
+示例：
 
 ```bash
 pnpm anchor goal --backend codex --goal "Implement the auth migration and verify it" --cwd D:\repo --json
@@ -39,24 +39,24 @@ node ./scripts/anchor-control.mjs doctor --json
 node ./scripts/anchor-control.mjs goal --backend codex --goal "Implement the auth migration and verify it" --cwd "/path/to/repo" --json
 ```
 
-## Anchor 带来了什么
-
-- 一个以 `goal` 为中心的统一入口，而不是拆成 plan/execute/debug 多条流程
-- 同一套控制模型同时覆盖 Codex 和 Claude Code
-- 落到 SQLite 的 append-only task history
-- 本地 artifacts，用于保存 transcript、patch 和 command log
-- 明确的 terminal reason，而不是模糊的 agent 退出状态
-
-## 为什么需要它
+## 为什么用 Anchor
 
 大多数编码 agent 很擅长不断尝试，但不擅长：
 
-- 判断自己是否卡在同一类失败模式里
+- 识别重复出现的失败模式
 - 在多轮尝试之间保留结构化记忆
 - 区分 backend 自述和可信执行证据
-- 留下一份之后还能检查的持久执行轨迹
+- 留下一份之后还能检查的持久执行记录
 
-Anchor 的作用就是把这层控制补上。
+Anchor 补上的就是这层控制。
+
+## 你会得到什么
+
+- 一个以目标为中心的统一入口
+- 同一套控制模型同时覆盖 Codex 和 Claude Code
+- 落到 SQLite 的 append-only task history
+- 本地 artifacts，用于保存 transcript、patch 和 command log
+- 明确的 terminal reason 和可回放状态
 
 ## 工作方式
 
@@ -85,9 +85,7 @@ flowchart LR
 
 Artifacts 用于追踪和检查。真正的控制决策来自 event log 和 projections。
 
-## 本地开发
-
-如果你是在维护这个仓库本身：
+## 从源码构建
 
 ```bash
 pnpm install
