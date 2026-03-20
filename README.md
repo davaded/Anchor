@@ -2,84 +2,61 @@
 
 [English](./README.md) | [简体中文](./README.zh-CN.md)
 
-Anchor is a goal-first control runtime for coding agents.
+Anchor is a goal-first control layer for coding agents.
 
-It sits above execution backends like Codex and Claude Code, keeps the control loop deterministic, records rounds in SQLite, stores artifacts locally, and exposes one user-facing action:
+Use it when you do not just want "an agent that runs", but a runtime that can keep state, remember failures, stop for explicit reasons, and leave a replayable ledger behind.
+
+## Install
+
+```bash
+npx anchor-workflow install
+```
+
+This installs:
+
+- a Codex skill at `~/.codex/skills/anchor-control`
+- a Claude Code skill at `~/.claude/skills/anchor-control`
+- a Claude command at `~/.claude/commands/anchor/goal.md`
+
+## Use
+
+Anchor is designed around one action:
 
 ```bash
 anchor goal
 ```
 
-Anchor is for the cases where "just let the agent run" is not enough. It gives you a stable control layer with memory, replay, and explicit stop decisions.
-
-## Quick Start
-
-Install the public package:
-
-```bash
-npx anchor-workflow install
-```
-
-Then use Anchor from Codex or Claude Code through the installed skill/command, or call the local CLI directly during development:
+Typical local CLI usage:
 
 ```bash
 pnpm anchor goal --backend codex --goal "Implement the auth migration and verify it" --cwd D:\repo --json
 ```
 
-## What You Get
-
-- One goal-oriented entrypoint instead of fragmented plan/execute/debug modes
-- Backend-agnostic control over Codex and Claude Code
-- Append-only event log with replayable task state
-- Local artifacts for transcripts, patches, and command logs
-- Resume-aware runtime model and explicit terminal reasons
-
-## Install
-
-For end users, the intended path is the npm installer package:
+If you are invoking the installed skill assets directly, use the cross-platform wrapper:
 
 ```bash
-npx anchor-workflow install
+node ./scripts/anchor-control.mjs doctor --json
+node ./scripts/anchor-control.mjs goal --backend codex --goal "Implement the auth migration and verify it" --cwd "/path/to/repo" --json
 ```
 
-That installs these host-facing assets:
+## What Anchor Adds
 
-- Codex skill: `~/.codex/skills/anchor-control`
-- Claude skill: `~/.claude/skills/anchor-control`
-- Claude command: `~/.claude/commands/anchor/goal.md`
+- one goal-oriented entrypoint instead of fragmented plan/execute/debug flows
+- the same control model above Codex and Claude Code
+- append-only task history in SQLite
+- local artifacts for transcripts, patches, and command logs
+- explicit terminal reasons instead of vague agent exits
 
-For local development inside this repo:
+## Why It Exists
 
-```bash
-pnpm install
-pnpm typecheck
-pnpm test
-pnpm anchor:doctor -- --json
-pnpm anchor --help
-pnpm anchor-workflow install
-```
+Most coding agents are good at trying things. They are much worse at:
 
-## Use Anchor
+- knowing when they are stuck in the same failure pattern
+- carrying structured memory across attempts
+- distinguishing backend self-report from trusted execution evidence
+- leaving a durable trace that you can inspect later
 
-Direct CLI:
-
-```bash
-pnpm anchor goal --backend codex --goal "Implement the auth migration and verify it" --cwd D:\repo --json
-```
-
-Repo-local skill wrapper:
-
-```powershell
-.\integrations\codex\skills\anchor-control\scripts\anchor-control.ps1 doctor -Json
-.\integrations\codex\skills\anchor-control\scripts\anchor-control.ps1 goal -Backend codex -Goal "Implement the auth migration and verify it" -Cwd "D:\repo" -Json
-```
-
-What Anchor persists by default:
-
-- SQLite database: `.anchor/anchor.db`
-- Artifacts: `.anchor/artifacts/`
-
-Artifacts are for inspection and traceability. Control decisions come from the event log and projections.
+Anchor exists to handle that control layer.
 
 ## How It Works
 
@@ -93,8 +70,30 @@ flowchart LR
   R --> L["Claude Adapter"]
 ```
 
-Anchor does three things:
+At a high level, Anchor:
 
-- normalize a user goal into a controlled round loop
-- evaluate backend output with explicit runtime rules
-- store enough state to inspect, replay, and reason about failure patterns
+1. turns a user goal into a controlled round loop
+2. evaluates backend output with explicit runtime rules
+3. records state for replay, inspection, and failure analysis
+
+## Local State
+
+By default, Anchor writes under `.anchor/`:
+
+- SQLite database: `.anchor/anchor.db`
+- artifacts: `.anchor/artifacts/`
+
+Artifacts are for traceability and inspection. Control decisions come from the event log and projections.
+
+## Develop
+
+If you are working on this repository itself:
+
+```bash
+pnpm install
+pnpm typecheck
+pnpm test
+pnpm anchor:doctor -- --json
+pnpm anchor --help
+pnpm anchor-workflow install
+```
