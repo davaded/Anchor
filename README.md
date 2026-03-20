@@ -31,6 +31,7 @@ pnpm test
 pnpm anchor:doctor -- --json
 pnpm anchor --help
 pnpm anchor-workflow install
+npx anchor-workflow install
 ```
 
 Example skill wrapper usage:

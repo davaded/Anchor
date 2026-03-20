@@ -2,11 +2,10 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { installWorkflowAssets } from "./installer";
+import { defaultAssetRoot, installWorkflowAssets } from "./installer";
 
 describe("installWorkflowAssets", () => {
-  it("copies codex and claude assets into target directories and clears stale commands", async () => {
-    const root = "D:\\dya\\code\\agent";
+  it("copies packaged assets into target directories and clears stale commands", async () => {
     const temp = fs.mkdtempSync(path.join(os.tmpdir(), "anchor-installer-"));
     const codexDir = path.join(temp, "codex-skills");
     const claudeSkillsDir = path.join(temp, "claude-skills");
@@ -17,12 +16,12 @@ describe("installWorkflowAssets", () => {
     fs.writeFileSync(path.join(staleCommandsDir, "resume.md"), "stale");
 
     const result = await installWorkflowAssets({
-      repoRoot: root,
       codexDir,
       claudeSkillsDir,
       claudeCommandsDir
     });
 
+    expect(result.assetRoot).toBe(defaultAssetRoot());
     expect(result.codexSkillPath).toBe(path.join(codexDir, "anchor-control"));
     expect(result.claudeSkillPath).toBe(path.join(claudeSkillsDir, "anchor-control"));
     expect(result.claudeCommandsPath).toBe(path.join(claudeCommandsDir, "anchor"));

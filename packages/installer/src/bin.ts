@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-import path from "node:path";
 import { Command } from "commander";
 import { defaultInstallTargets, installWorkflowAssets } from "./installer";
 
@@ -8,14 +7,14 @@ program.name("anchor-workflow").description("Install Anchor workflow skills and 
 
 program
   .command("install")
-  .option("--repo-root <dir>", "Repository root", path.resolve(process.cwd()))
+  .option("--repo-root <dir>", "Developer override: source repository root")
   .option("--codex-dir <dir>", "Codex skills directory", defaultInstallTargets().codexDir)
   .option("--claude-skills-dir <dir>", "Claude skills directory", defaultInstallTargets().claudeSkillsDir)
   .option("--claude-commands-dir <dir>", "Claude commands directory", defaultInstallTargets().claudeCommandsDir)
   .option("--codex-only", "Install only Codex skills")
   .option("--claude-only", "Install only Claude assets")
   .action(async (options: {
-    repoRoot: string;
+    repoRoot?: string;
     codexDir: string;
     claudeSkillsDir: string;
     claudeCommandsDir: string;

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Anchor Control"
+  short_description: "Run long coding tasks through Anchor"
+  default_prompt: "Use $anchor-control to run this work through the local Anchor runtime."
