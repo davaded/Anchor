@@ -1,0 +1,29 @@
+{
+  "files": [],
+  "references": [
+    {
+      "path": "./packages/core"
+    },
+    {
+      "path": "./packages/storage-sqlite"
+    },
+    {
+      "path": "./packages/artifact-store-local"
+    },
+    {
+      "path": "./packages/workflow"
+    },
+    {
+      "path": "./packages/adapter-codex"
+    },
+    {
+      "path": "./packages/adapter-claude"
+    },
+    {
+      "path": "./packages/installer"
+    },
+    {
+      "path": "./packages/cli"
+    }
+  ]
+}

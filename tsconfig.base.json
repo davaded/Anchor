@@ -1,0 +1,42 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": [
+      "ES2022"
+    ],
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "baseUrl": ".",
+    "strict": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "paths": {
+      "@anchor/core": [
+        "./packages/core/src/index.ts"
+      ],
+      "@anchor/storage-sqlite": [
+        "./packages/storage-sqlite/src/index.ts"
+      ],
+      "@anchor/artifact-store-local": [
+        "./packages/artifact-store-local/src/index.ts"
+      ],
+      "@anchor/workflow": [
+        "./packages/workflow/src/index.ts"
+      ],
+      "@anchor/adapter-codex": [
+        "./packages/adapter-codex/src/index.ts"
+      ],
+      "@anchor/adapter-claude": [
+        "./packages/adapter-claude/src/index.ts"
+      ],
+      "@anchor/installer": [
+        "./packages/installer/src/index.ts"
+      ]
+    }
+  }
+}

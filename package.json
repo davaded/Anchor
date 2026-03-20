@@ -1,0 +1,22 @@
+{
+  "name": "anchor-runtime-workspace",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "anchor": "pnpm typecheck && node packages/cli/dist/bin.js",
+    "anchor-workflow": "pnpm typecheck && node packages/installer/dist/bin.js",
+    "anchor:doctor": "pnpm typecheck && node packages/cli/dist/bin.js adapters doctor",
+    "typecheck": "tsc -b",
+    "test": "pnpm typecheck && vitest run"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "fs-extra": "^11.3.0",
+    "@types/node": "^22.15.20",
+    "@types/sql.js": "^1.4.9",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3",
+    "vitest": "^3.1.4"
+  },
+  "packageManager": "pnpm@10.26.2+sha512.0e308ff2005fc7410366f154f625f6631ab2b16b1d2e70238444dd6ae9d630a8482d92a451144debc492416896ed16f7b114a86ec68b8404b2443869e68ffda6"
+}

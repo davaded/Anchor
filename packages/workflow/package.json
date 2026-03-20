@@ -1,0 +1,20 @@
+{
+  "name": "@anchor/workflow",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "dependencies": {
+    "@anchor/adapter-claude": "workspace:*",
+    "@anchor/adapter-codex": "workspace:*",
+    "@anchor/artifact-store-local": "workspace:*",
+    "@anchor/core": "workspace:*",
+    "@anchor/storage-sqlite": "workspace:*"
+  }
+}

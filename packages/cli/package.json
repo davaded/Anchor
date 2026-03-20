@@ -1,0 +1,25 @@
+{
+  "name": "@anchor/cli",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./dist/bin.js",
+  "types": "./dist/bin.d.ts",
+  "bin": {
+    "anchor": "./dist/bin.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/bin.d.ts",
+      "default": "./dist/bin.js"
+    }
+  },
+  "dependencies": {
+    "@anchor/adapter-claude": "workspace:*",
+    "@anchor/adapter-codex": "workspace:*",
+    "@anchor/artifact-store-local": "workspace:*",
+    "@anchor/core": "workspace:*",
+    "@anchor/workflow": "workspace:*",
+    "@anchor/storage-sqlite": "workspace:*",
+    "commander": "^13.1.0"
+  }
+}
