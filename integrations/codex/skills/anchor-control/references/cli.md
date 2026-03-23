@@ -15,7 +15,8 @@ If the skill was installed from an Anchor source checkout, the installer writes 
 
 1. Run `doctor` first to confirm local backends are visible.
 2. Start a task with `goal`.
-3. Save the returned `task_id`.
+3. Run `test` when you want a verification report for the current work.
+4. Save the returned `task_id` from goal mode if you need inspect/replay later.
 
 ## Commands
 
@@ -28,5 +29,11 @@ node ./scripts/anchor-control.mjs doctor --json
 ### Goal
 
 ```bash
-node ./scripts/anchor-control.mjs goal --backend codex --goal "Implement or analyze X" --cwd "/path/to/repo" --json
+node ./scripts/anchor-control.mjs goal "Implement or analyze X" --json
+```
+
+### Test
+
+```bash
+node ./scripts/anchor-control.mjs test "current work" --json
 ```

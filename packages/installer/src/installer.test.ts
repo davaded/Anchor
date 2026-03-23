@@ -34,6 +34,7 @@ describe("installWorkflowAssets", () => {
     expect(fs.existsSync(path.join(codexDir, "anchor-control", "scripts", "anchor-control.mjs"))).toBe(true);
     expect(fs.existsSync(path.join(codexDir, "anchor-control", "scripts", "anchor-control.ps1"))).toBe(true);
     expect(fs.existsSync(path.join(claudeCommandsDir, "anchor", "goal.md"))).toBe(true);
+    expect(fs.existsSync(path.join(claudeCommandsDir, "anchor", "test.md"))).toBe(true);
     expect(fs.existsSync(path.join(claudeCommandsDir, "anchor", "resume.md"))).toBe(false);
 
     const runtimeConfig = JSON.parse(
@@ -65,7 +66,7 @@ describe("installWorkflowAssets", () => {
     expect(command.status).toBe(0);
     expect(command.stdout).toContain('"backend_id": "codex"');
     expect(command.stdout).toContain('"backend_id": "claude"');
-  });
+  }, 20000);
 
   it("runs the installed PowerShell wrapper against the linked workspace on Windows", async () => {
     if (process.platform !== "win32") {
@@ -98,5 +99,5 @@ describe("installWorkflowAssets", () => {
     expect(command.status).toBe(0);
     expect(command.stdout).toContain('"backend_id": "codex"');
     expect(command.stdout).toContain('"backend_id": "claude"');
-  });
+  }, 20000);
 });

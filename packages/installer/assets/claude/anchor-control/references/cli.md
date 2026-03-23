@@ -22,5 +22,11 @@ node ./scripts/anchor-control.mjs doctor --json
 ### Goal
 
 ```bash
-node ./scripts/anchor-control.mjs goal --backend claude --goal "Implement or analyze X" --cwd "/path/to/repo" --json
+node ./scripts/anchor-control.mjs goal "Implement or analyze X" --json
+```
+
+### Test
+
+```bash
+node ./scripts/anchor-control.mjs test "current work" --json
 ```

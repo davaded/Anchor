@@ -23,10 +23,16 @@ node ./scripts/anchor-control.mjs doctor --json
 2. Start a new Anchor-controlled workflow:
 
 ```bash
-node ./scripts/anchor-control.mjs goal --backend codex --goal "Implement the requested change" --cwd "/path/to/repo" --json
+node ./scripts/anchor-control.mjs goal "Implement the requested change" --json
 ```
 
-3. Capture the returned `task_id` if you need to inspect the underlying runtime later through low-level tooling.
+3. Run verification when you want a report on the current work before accepting the result:
+
+```bash
+node ./scripts/anchor-control.mjs test "current work" --json
+```
+
+4. Capture the returned `task_id` from goal mode if you need to inspect the underlying runtime later through low-level tooling.
 
 ## Trigger Guidance
 
@@ -35,6 +41,7 @@ Use this skill when:
 - the task may require multiple attempts
 - you need failure memory or loop-aware control
 - you want a stable control layer above Codex execution with a single goal-first entrypoint
+- you want a separate verification pass that reports issues before repair
 
 Do not use this skill for:
 

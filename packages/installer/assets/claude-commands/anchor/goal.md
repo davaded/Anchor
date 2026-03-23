@@ -8,6 +8,6 @@ $ARGUMENTS
 
 Requirements:
 - Prefer backend `claude` unless the user explicitly wants `codex`
-- Use the current workspace as `cwd`
+- Use the current workspace implicitly; do not force the user to supply `cwd`
 - Treat the request as one goal-oriented workflow, not separate plan/execute/review/debug modes
 - Return the resulting `task_id` and summary

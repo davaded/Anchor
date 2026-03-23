@@ -1,11 +1,16 @@
 param(
-  [Parameter(Mandatory = $true)]
-  [ValidateSet("doctor", "goal")]
+  [Parameter(Mandatory = $true, Position = 0)]
+  [ValidateSet("doctor", "goal", "test")]
   [string]$Command,
+
+  [Parameter(Position = 1, ValueFromRemainingArguments = $true)]
+  [string[]]$TargetParts = @(),
 
   [string]$Backend = "claude",
   [string]$Goal,
-  [string]$Cwd,
+  [string]$Target,
+  [string]$Repair,
+  [string]$Cwd = (Get-Location).Path,
   [string[]]$Constraint = @(),
   [string[]]$Success = @(),
   [int]$MaxRounds = 6,
@@ -99,6 +104,18 @@ function Read-ConfiguredRepoRoot {
   return Resolve-RepoRootOverride "Anchor runtime config" ([string]$config.repoRoot)
 }
 
+$resolvedTarget = @($Target, $Goal, ($TargetParts -join " ")) |
+  Where-Object { -not [string]::IsNullOrWhiteSpace($_) } |
+  Select-Object -First 1
+
+if ($Command -eq "goal" -and [string]::IsNullOrWhiteSpace($resolvedTarget)) {
+  Write-Fail "Target is required for goal."
+}
+
+if ($Command -eq "test" -and [string]::IsNullOrWhiteSpace($resolvedTarget)) {
+  $resolvedTarget = "current work"
+}
+
 $anchorArgs = @()
 
 switch ($Command) {
@@ -106,13 +123,15 @@ switch ($Command) {
     $anchorArgs += @("adapters", "doctor")
   }
   "goal" {
-    if (-not $Goal) {
-      throw "Goal is required for goal."
-    }
-    $anchorArgs += @("goal", "--backend", $Backend, "--goal", $Goal)
-    if ($Cwd) { $anchorArgs += @("--cwd", $Cwd) }
+    $anchorArgs += @("goal", $resolvedTarget, "--backend", $Backend, "--cwd", $Cwd)
     foreach ($item in $Constraint) { $anchorArgs += @("--constraint", $item) }
     foreach ($item in $Success) { $anchorArgs += @("--success", $item) }
+    $anchorArgs += @("--max-rounds", "$MaxRounds", "--max-same-failure", "$MaxSameFailure")
+    if ($NoAllowPartial) { $anchorArgs += "--no-allow-partial" }
+  }
+  "test" {
+    $anchorArgs += @("test", $resolvedTarget, "--backend", $Backend, "--cwd", $Cwd)
+    if (-not [string]::IsNullOrWhiteSpace($Repair)) { $anchorArgs += @("--repair", $Repair) }
     $anchorArgs += @("--max-rounds", "$MaxRounds", "--max-same-failure", "$MaxSameFailure")
     if ($NoAllowPartial) { $anchorArgs += "--no-allow-partial" }
   }

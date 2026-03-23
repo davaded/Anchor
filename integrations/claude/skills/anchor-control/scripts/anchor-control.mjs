@@ -5,7 +5,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const DEFAULT_BACKEND = "claude";
-const VALID_COMMANDS = new Set(["doctor", "goal"]);
+const VALID_COMMANDS = new Set(["doctor", "goal", "test"]);
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const WORKSPACE_PACKAGE_NAME = "anchor-runtime-workspace";
 const RUNTIME_CONFIG_PATH = path.resolve(scriptDir, "..", "anchor-runtime.json");
@@ -81,7 +81,7 @@ function readConfiguredRepoRoot() {
 
 function parseArgs(argv) {
   if (argv.length === 0) {
-    fail("Command is required: doctor | goal");
+    fail("Command is required: doctor | goal | test");
   }
 
   const [command, ...rest] = argv;
@@ -92,10 +92,12 @@ function parseArgs(argv) {
   const options = {
     command,
     backend: DEFAULT_BACKEND,
+    cwd: process.cwd(),
     constraints: [],
     success: [],
     json: false,
-    noAllowPartial: false
+    noAllowPartial: false,
+    targetParts: []
   };
 
   for (let index = 0; index < rest.length; index += 1) {
@@ -107,7 +109,13 @@ function parseArgs(argv) {
         break;
       case "-Goal":
       case "--goal":
-        options.goal = rest[++index] ?? fail("Missing value for goal.");
+      case "-Target":
+      case "--target":
+        options.targetParts.push(rest[++index] ?? fail("Missing value for target."));
+        break;
+      case "-Repair":
+      case "--repair":
+        options.repair = rest[++index] ?? fail("Missing value for repair.");
         break;
       case "-Cwd":
       case "--cwd":
@@ -138,12 +146,19 @@ function parseArgs(argv) {
         options.json = true;
         break;
       default:
-        fail(`Unsupported argument: ${token}`);
+        if (token.startsWith("-")) {
+          fail(`Unsupported argument: ${token}`);
+        }
+        options.targetParts.push(token);
     }
   }
 
-  if (options.command === "goal" && !options.goal) {
-    fail("Goal is required for goal.");
+  options.target = options.targetParts.join(" ").trim();
+  if (options.command === "goal" && !options.target) {
+    fail("Target is required for goal.");
+  }
+  if (options.command === "test" && !options.target) {
+    options.target = "current work";
   }
 
   return options;
@@ -154,7 +169,30 @@ function buildAnchorArgs(options) {
     return ["adapters", "doctor"];
   }
 
-  const args = ["goal", "--backend", options.backend, "--goal", options.goal];
+  if (options.command === "test") {
+    const args = ["test", options.target];
+    if (options.backend) {
+      args.push("--backend", options.backend);
+    }
+    if (options.repair) {
+      args.push("--repair", options.repair);
+    }
+    if (options.cwd) {
+      args.push("--cwd", options.cwd);
+    }
+    if (options.maxRounds) {
+      args.push("--max-rounds", options.maxRounds);
+    }
+    if (options.maxSameFailure) {
+      args.push("--max-same-failure", options.maxSameFailure);
+    }
+    if (options.noAllowPartial) {
+      args.push("--no-allow-partial");
+    }
+    return args;
+  }
+
+  const args = ["goal", options.target, "--backend", options.backend];
   if (options.cwd) {
     args.push("--cwd", options.cwd);
   }

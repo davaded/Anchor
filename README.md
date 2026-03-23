@@ -2,9 +2,9 @@
 
 [English](./README.md) | [简体中文](./README.zh-CN.md)
 
-One goal. Controlled execution. Replayable state.
+Goal-first execution. Verification before trust.
 
-Anchor is a control layer for coding agents. It sits above Codex and Claude Code, runs a deterministic round loop, records what happened, and stops for explicit reasons instead of vague agent exits.
+Anchor is a skill-first control layer for Codex and Claude Code. It runs deterministic goal and verification flows, records what happened, and stops for explicit reasons instead of vague agent exits.
 
 ## Start In One Step
 
@@ -16,27 +16,30 @@ That installs Anchor into:
 
 - Codex: `~/.codex/skills/anchor-control`
 - Claude Code: `~/.claude/skills/anchor-control`
-- Claude command: `~/.claude/commands/anchor/goal.md`
+- Claude commands: `~/.claude/commands/anchor/goal.md`, `~/.claude/commands/anchor/test.md`
 
-## The Core Action
+## Core Actions
 
-Anchor is built around one command:
+Anchor is built around two user-facing commands:
 
 ```bash
 anchor goal
+anchor test
 ```
 
 Example:
 
 ```bash
-pnpm anchor goal --backend codex --goal "Implement the auth migration and verify it" --cwd D:\repo --json
+pnpm anchor goal "Implement the auth migration" --backend codex --cwd D:\repo --json
+pnpm anchor test "current work" --cwd D:\repo --json
 ```
 
 If you are calling the installed skill assets directly, use the cross-platform wrapper. Installs performed from an Anchor source checkout, or with `--repo-root`, record the runtime workspace automatically. Otherwise set `ANCHOR_REPO_ROOT` or make `anchor` available on `PATH`.
 
 ```bash
 node ./scripts/anchor-control.mjs doctor --json
-node ./scripts/anchor-control.mjs goal --backend codex --goal "Implement the auth migration and verify it" --cwd "/path/to/repo" --json
+node ./scripts/anchor-control.mjs goal "Implement the auth migration" --json
+node ./scripts/anchor-control.mjs test "current work" --json
 ```
 
 ## Why Use Anchor
@@ -52,8 +55,8 @@ Anchor handles that control layer.
 
 ## What You Get
 
-- a single goal-first entrypoint
-- the same control model above Codex and Claude Code
+- paired goal and verification entrypoints
+- the same skill control model above Codex and Claude Code
 - append-only task history in SQLite
 - local artifacts for transcripts, patches, and command logs
 - explicit terminal reasons and replayable state
@@ -62,8 +65,8 @@ Anchor handles that control layer.
 
 ```mermaid
 flowchart LR
-  U["User Goal"] --> W["anchor goal"]
-  W --> R["Anchor Runtime"]
+  U["User Request"] --> W["anchor goal / anchor test"]
+  W --> R["Anchor Control Layer"]
   R --> S["SQLite Event Log"]
   R --> A["Local Artifact Store"]
   R --> C["Codex Adapter"]
@@ -72,8 +75,8 @@ flowchart LR
 
 At a high level, Anchor:
 
-1. turns a user goal into a controlled round loop
-2. evaluates backend output with explicit runtime rules
+1. turns a user request into a controlled goal or verification flow
+2. evaluates backend output and trusted verification evidence with explicit rules
 3. records state for replay, inspection, and failure analysis
 
 ## Local State

@@ -1,17 +1,17 @@
 # Anchor
 
-**Anchor is a backend-agnostic headless control runtime for coding agents.**
+**Anchor is a skill-first control layer for Codex and Claude Code.**
 
-Anchor does not replace execution backends like Codex, Claude Code, or other coding agents.  
-Instead, it wraps them with a persistent control loop that keeps long-running tasks anchored to a goal, remembers failures across attempts, detects unproductive loops, and switches strategies when needed.
+Anchor does not replace Codex or Claude Code.  
+Instead, it wraps them with a persistent control loop that keeps long-running work anchored to a goal, remembers failures across attempts, detects unproductive loops, and supports a separate verification pass before accepting results.
 
 ---
 
 ## What Anchor Is
 
-Anchor is a **control runtime** for coding agents.
+Anchor is a **skill-first control layer** for coding work.
 
-It sits above execution backends and manages:
+It sits above Codex and Claude Code and manages:
 
 - **goal anchoring**
 - **failure memory**
@@ -35,7 +35,7 @@ Anchor is **not**:
 - a replacement for Codex, Claude Code, or similar execution backends
 
 Execution belongs to the backend.  
-Control belongs to Anchor.
+Skill-level control belongs to Anchor.
 
 ---
 
@@ -176,9 +176,9 @@ Anchor is best suited for:
 
 Think of Anchor as:
 
-- a **control plane** for coding agents
-- a **headless runtime** for persistent task execution
+- a **skill-first control plane** for Codex and Claude Code
 - a **decision layer** above agent execution
+- a **goal and verification workflow layer** for repository work
 
 If a coding agent is the worker, Anchor is the runtime that decides whether the worker should continue, change tactics, or stop.
 
@@ -194,7 +194,7 @@ Anchor is currently defined as a runtime model with:
 - loop detection
 - strategy switching
 
-The first implementation target is a backend-agnostic runtime that can wrap existing coding agents without replacing them.
+The current implementation target is a skill-first control layer for Codex and Claude Code that still preserves reusable runtime components under the hood.
 
 Current spec set:
 
@@ -203,6 +203,8 @@ Current spec set:
 - `backend-adapter-contract-v0.1.md`
 - `memory-schema-v0.1.md`
 - `boundary.md`
+- `goal-skill-mode-v0.1.md`
+- `test-skill-mode-v0.1.md`
 
 ---
 
